@@ -42,9 +42,23 @@ async function run() {
       res.send(service);
     });
 
-    //review api
+    //add service
+    app.post("/services", async (req, res) => {
+      const service = req.body;
+      const result = await serviceCollection.insertOne(service);
+      res.send(result);
+    });
 
-    //review by specific user
+    //review api
+    //specific review by reviewID
+    app.get("/reviews/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const service = await reviewCollection.findOne(query);
+      res.send(service);
+    });
+
+    //all review by specific user
     app.get("/reviews", async (req, res) => {
       let query = {};
       if (req.query.email) {
@@ -57,12 +71,28 @@ async function run() {
       res.send(reviews);
     });
 
+    //give feedback review by user
     app.post("/reviews", async (req, res) => {
       const review = req.body;
       const result = await reviewCollection.insertOne(review);
       res.send(result);
     });
 
+    //update a review
+    app.patch("/reviews/:id", async (req, res) => {
+      const id = req.params.id;
+      const message = req.body.message;
+      const query = { _id: ObjectId(id) };
+      const updatedReview = {
+        $set: {
+          message: message,
+        },
+      };
+      const result = await reviewCollection.updateOne(query, updatedReview);
+      res.send(result);
+    });
+
+    //delete a review
     app.delete("/reviews/:id", async (req, res) => {
       const id = req.params.id;
       console.log("deleting: ", id);
