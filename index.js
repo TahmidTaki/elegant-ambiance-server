@@ -62,7 +62,8 @@ async function run() {
     app.get("/servicereviews/:id", async (req, res) => {
       const id = req.params.id;
       const query = { service: id };
-      const service = reviewCollection.find(query);
+      const service = reviewCollection.find(query).sort({ _id: -1 });
+      /* note to myself: since MongoDB ObjectId contain a timestamp, I can sort by 'created date' if I will sort by objectId */
       const services = await service.toArray();
       res.send(services);
     });
