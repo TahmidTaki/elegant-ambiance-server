@@ -58,6 +58,15 @@ async function run() {
       res.send(service);
     });
 
+    //all reviews for specific service
+    app.get("/servicereviews/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { service: id };
+      const service = reviewCollection.find(query);
+      const services = await service.toArray();
+      res.send(services);
+    });
+
     //all review by specific user
     app.get("/reviews", async (req, res) => {
       let query = {};
