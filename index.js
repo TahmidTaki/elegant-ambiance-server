@@ -34,6 +34,15 @@ async function run() {
       res.send(services);
     });
 
+    //get latest 3 services for homepage
+    app.get("/serviceshome", async (req, res) => {
+      const query = {};
+      const cursor = serviceCollection.find(query).sort({ _id: -1 });
+      // If i order by _id i will automatically order by created date of that _id
+      const services = await cursor.limit(3).toArray();
+      res.send(services);
+    });
+
     //get service details
     app.get("/services/:id", async (req, res) => {
       const id = req.params.id;
